@@ -35,10 +35,10 @@ export const config = {
   },
 
   aws: {
-    region: process.env.AWS_REGION ?? 'ap-south-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
-    s3Bucket: process.env.S3_BUCKET ?? '',
+    region: process.env.AWS_REGION!,
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    s3Bucket: process.env.S3_BUCKET!,
   },
 
   frontendUrl: (process.env.FRONTEND_URL ?? 'http://localhost:3000').replace(/\/$/, ''),

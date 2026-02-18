@@ -48,5 +48,35 @@ app.use('/api/delivery', deliveryRoutes);
 app.use('/health', healthRoutes);
 app.use('/api/health', healthRoutes);
 
+// Root route so hitting the server URL returns a clear response
+app.get('/', (_req, res) => {
+  res.json({
+    ok: true,
+    message: 'API is running',
+    health: '/health or /api/health',
+    apiBase: '/api',
+    endpoints: [
+      '/api/auth',
+      '/api/products',
+      '/api/orders',
+      '/api/chatbot',
+      '/api/wishlist',
+      '/api/reviews',
+      '/api/coupons',
+      '/api/campaigns',
+      '/api/upload',
+      '/api/addresses',
+      '/api/delivery',
+      '/api/webhooks/razorpay',
+      '/api/webhooks/shiprocket',
+    ],
+  });
+});
+
+// 404 for any unmatched route (JSON response for API clients)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found', path: req.path });
+});
+
 app.use(errorHandler);
 export default app;
