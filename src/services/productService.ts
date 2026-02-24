@@ -6,8 +6,9 @@ import type { CreateProductBody, UpdateProductBody } from '../validators/product
 
 export interface ProductListQuery {
   search?: string;
-  category?: 'RESIN' | 'HANDLOOM';
-  sort?: 'price_asc' | 'price_desc';
+  category?: 'RESIN' | 'HANDLOOM' | 'OTHERS';
+  subcategory?: string;
+  sort?: 'price_asc' | 'price_desc' | 'newest';
   featured?: string;
   ids?: string;
   minPrice?: string;
@@ -26,6 +27,7 @@ export interface ProductWithRating {
   images?: string[];
   isFeatured?: boolean;
   stock?: number;
+  subcategory?: string | null;
   avgRating: number;
   reviewCount: number;
   createdAt?: Date;
@@ -40,7 +42,11 @@ export async function listProducts(query: ProductListQuery): Promise<ProductWith
       { description: new RegExp(query.search.trim(), 'i') },
     ];
   }
-  if (query.category === 'RESIN' || query.category === 'HANDLOOM') filter.category = query.category;
+  if (query.category === 'RESIN' || query.category === 'HANDLOOM' || query.category === 'OTHERS') filter.category = query.category;
+  const subcategoryValues = ['HOME_DECOR', 'FASHION', 'SPIRITUAL', 'GIFTS', 'OTHERS'];
+  if (typeof query.subcategory === 'string' && subcategoryValues.includes(query.subcategory)) {
+    filter.subcategory = query.subcategory;
+  }
   if (query.featured === 'true') filter.isFeatured = true;
   if (typeof query.ids === 'string' && query.ids.trim()) {
     const idList = query.ids
@@ -63,6 +69,7 @@ export async function listProducts(query: ProductListQuery): Promise<ProductWith
   let q = Product.find(filter);
   if (query.sort === 'price_asc') q = q.sort({ price: 1 });
   else if (query.sort === 'price_desc') q = q.sort({ price: -1 });
+  else if (query.sort === 'newest') q = q.sort({ createdAt: -1 });
   const products = await q.lean();
   const ids = (products as { _id: mongoose.Types.ObjectId }[]).map((p) => p._id);
   const ratingStats = await Review.aggregate([

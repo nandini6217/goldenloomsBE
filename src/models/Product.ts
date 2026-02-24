@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
-    category: { type: String, required: true, enum: ['RESIN', 'HANDLOOM'] },
+    category: { type: String, required: true, enum: ['RESIN', 'HANDLOOM', 'OTHERS'] },
     price: { type: Number, required: true },
     discountedPrice: { type: Number, default: null },
     expectedDeliveryTime: { type: String, default: '7-10 days' },
@@ -12,6 +12,11 @@ const productSchema = new mongoose.Schema(
     images: [{ type: String }],
     isFeatured: { type: Boolean, default: false },
     stock: { type: Number, default: 0 },
+    subcategory: {
+      type: String,
+      enum: ['HOME_DECOR', 'FASHION', 'SPIRITUAL', 'GIFTS', 'OTHERS'],
+      default: null,
+    },
   },
   { timestamps: true }
 );

@@ -85,6 +85,7 @@ export async function createOrder(
     phone: order.phone,
     status: order.status,
     totalAmount: order.totalAmount,
+    itemCount: orderItems.length,
   }).catch(() => {});
   return { orderId: order._id.toString() };
 }
