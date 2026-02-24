@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { requestIdMiddleware } from './middleware/requestId';
-import { authRateLimiter, orderRateLimiter, webhookRateLimiter } from './middleware/rateLimit';
+import { authRateLimiter, orderRateLimiter, webhookRateLimiter, eventRateLimiter } from './middleware/rateLimit';
 import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth';
 import productRoutes from './routes/products';
@@ -14,6 +14,7 @@ import campaignRoutes from './routes/campaigns';
 import uploadRoutes from './routes/upload';
 import addressRoutes from './routes/addresses';
 import deliveryRoutes from './routes/delivery';
+import eventRoutes from './routes/events';
 import healthRoutes from './routes/health';
 import razorpayWebhookRoutes from './routes/webhooks/razorpay';
 import shiprocketWebhookRoutes from './routes/webhooks/shiprocket';
@@ -45,6 +46,7 @@ app.use('/api/campaigns', campaignRoutes);
 app.use('/api/upload', authRateLimiter, uploadRoutes);
 app.use('/api/addresses', addressRoutes);
 app.use('/api/delivery', deliveryRoutes);
+app.use('/api/events', eventRateLimiter, eventRoutes);
 app.use('/health', healthRoutes);
 app.use('/api/health', healthRoutes);
 
@@ -67,6 +69,7 @@ app.get('/', (_req, res) => {
       '/api/upload',
       '/api/addresses',
       '/api/delivery',
+      '/api/events',
       '/api/webhooks/razorpay',
       '/api/webhooks/shiprocket',
     ],

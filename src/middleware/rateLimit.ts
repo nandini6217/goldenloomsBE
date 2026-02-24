@@ -23,3 +23,11 @@ export const webhookRateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+export const eventRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 120,
+  message: { error: 'Too many events' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

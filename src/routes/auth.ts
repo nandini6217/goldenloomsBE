@@ -11,6 +11,7 @@ import { success } from '../utils/apiResponse';
 import { AppError } from '../middleware/errorHandler';
 import * as authService from '../services/authService';
 import * as orderService from '../services/orderService';
+import { notifyDiscordLead } from '../lib/discord';
 
 const router = Router();
 
@@ -126,6 +127,12 @@ router.post(
     const data = (req as Request & { validatedBody?: import('../validators/auth').RegisterBody }).validatedBody!;
     const result = await authService.register(data);
     await orderService.mergeGuestOrdersToUser(result.user.id, result.user.email);
+    notifyDiscordLead({
+      source: 'Registration',
+      name: result.user.name ?? result.user.email,
+      email: result.user.email,
+      phone: result.user.phone,
+    }).catch(() => {});
     success(res, { token: result.token, user: result.user }, 201);
   })
 );
